@@ -26,7 +26,7 @@
 
 #import "VIMVideo.h"
 
-#import "VIMObjectMapper.h"
+#import <VIMObjectMapper/VIMObjectMapper.h>
 #import "VIMUser.h"
 #import "VIMPicture.h"
 #import "VIMVideoFile.h"
