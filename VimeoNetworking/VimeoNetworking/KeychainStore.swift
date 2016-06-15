@@ -199,6 +199,6 @@ final class ArchiveStore: SecureDataStore
         
         let fileURL = directoryURL.URLByAppendingPathComponent("dontlookatthis-\(key).plist")
         
-        return fileURL
+        return fileURL!
     }
 }
