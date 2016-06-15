@@ -21,12 +21,12 @@ final public class AuthenticationController
     
     private static let CodeGrantAuthorizationPath = "oauth/authorize"
     
-    private static let PinCodeRequestInterval: NSTimeInterval = 5
+    private static let PinCodeRequestInterval: TimeInterval = 5
     
     public typealias AuthenticationCompletion = ResultCompletion<VIMAccount>.T
     
     /// State is tracked for the code grant request/response cycle, to avoid interception
-    static let state = NSProcessInfo.processInfo().globallyUniqueString
+    static let state = ProcessInfo.processInfo().globallyUniqueString
     
     let configuration: AppConfiguration
     let client: VimeoClient
@@ -79,7 +79,7 @@ final public class AuthenticationController
     
     // MARK: - Public Authentication
     
-    public func clientCredentialsGrant(completion: AuthenticationCompletion)
+    public func clientCredentialsGrant(_ completion: AuthenticationCompletion)
     {
         let request = AuthenticationRequest.clientCredentialsGrantRequest(scopes: self.configuration.scopes)
         
@@ -95,7 +95,7 @@ final public class AuthenticationController
         return URI
     }
     
-    public func codeGrantAuthorizationURL() -> NSURL
+    public func codeGrantAuthorizationURL() -> URL
     {
         let parameters = [self.dynamicType.ResponseTypeKey: self.dynamicType.CodeKey,
                           self.dynamicType.ClientIDKey: self.configuration.clientKey,
@@ -103,7 +103,7 @@ final public class AuthenticationController
                           self.dynamicType.ScopeKey: Scope.combine(self.configuration.scopes),
                           self.dynamicType.StateKey: self.dynamicType.state]
         
-        guard let urlString = VimeoBaseURLString?.URLByAppendingPathComponent(self.dynamicType.CodeGrantAuthorizationPath).absoluteString
+        guard let urlString = try! VimeoBaseURLString?.appendingPathComponent(self.dynamicType.CodeGrantAuthorizationPath)?.absoluteString
         else
         {
             fatalError("Could not make code grant auth URL")
@@ -112,7 +112,7 @@ final public class AuthenticationController
         var error: NSError?
         let urlRequest = VimeoRequestSerializer(appConfiguration: self.configuration).requestWithMethod(VimeoClient.Method.GET.rawValue, URLString: urlString, parameters: parameters, error: &error)
         
-        guard let url = urlRequest.URL where error == nil
+        guard let url = urlRequest.url where error == nil
         else
         {
             fatalError("Could not make code grant auth URL")
@@ -121,7 +121,7 @@ final public class AuthenticationController
         return url
     }
     
-    public func codeGrant(responseURL responseURL: NSURL, completion: AuthenticationCompletion)
+    public func codeGrant(responseURL: URL, completion: AuthenticationCompletion)
     {
         guard let queryString = responseURL.query,
             let parameters = queryString.parametersFromQueryString(),
@@ -133,7 +133,7 @@ final public class AuthenticationController
             
             assertionFailure(errorDescription)
             
-            let error = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.CodeGrant.rawValue, userInfo: [NSLocalizedDescriptionKey: errorDescription])
+            let error = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.codeGrant.rawValue, userInfo: [NSLocalizedDescriptionKey: errorDescription])
             
             completion(result: .Failure(error: error))
             
@@ -146,7 +146,7 @@ final public class AuthenticationController
             
             assertionFailure(errorDescription)
             
-            let error = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.CodeGrantState.rawValue, userInfo: [NSLocalizedDescriptionKey: errorDescription])
+            let error = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.codeGrantState.rawValue, userInfo: [NSLocalizedDescriptionKey: errorDescription])
             
             completion(result: .Failure(error: error))
             
@@ -160,28 +160,28 @@ final public class AuthenticationController
     
     // MARK: - Private Authentication
     
-    public func logIn(email email: String, password: String, completion: AuthenticationCompletion)
+    public func logIn(email: String, password: String, completion: AuthenticationCompletion)
     {
         let request = AuthenticationRequest.logInRequest(email: email, password: password, scopes: self.configuration.scopes)
         
         self.authenticate(request: request, completion: completion)
     }
     
-    public func join(name name: String, email: String, password: String, completion: AuthenticationCompletion)
+    public func join(name: String, email: String, password: String, completion: AuthenticationCompletion)
     {
         let request = AuthenticationRequest.joinRequest(name: name, email: email, password: password, scopes: self.configuration.scopes)
         
         self.authenticate(request: request, completion: completion)
     }
     
-    public func facebookLogIn(facebookToken facebookToken: String, completion: AuthenticationCompletion)
+    public func facebookLogIn(facebookToken: String, completion: AuthenticationCompletion)
     {
         let request = AuthenticationRequest.logInFacebookRequest(facebookToken: facebookToken, scopes: self.configuration.scopes)
         
         self.authenticate(request: request, completion: completion)
     }
     
-    public func facebookJoin(facebookToken facebookToken: String, completion: AuthenticationCompletion)
+    public func facebookJoin(facebookToken: String, completion: AuthenticationCompletion)
     {
         let request = AuthenticationRequest.joinFacebookRequest(facebookToken: facebookToken, scopes: self.configuration.scopes)
         
@@ -192,7 +192,7 @@ final public class AuthenticationController
     
     public typealias PinCodeInfoHander = (pinCode: String, activateLink: String) -> Void
     
-    public func pinCode(infoHandler infoHandler: PinCodeInfoHander, completion: AuthenticationCompletion)
+    public func pinCode(infoHandler: PinCodeInfoHander, completion: AuthenticationCompletion)
     {
         let infoRequest = PinCodeRequest.getPinCodeRequest(scopes: self.configuration.scopes)
         
@@ -233,14 +233,14 @@ final public class AuthenticationController
         }
     }
     
-    private func doPinCodeAuthorization(userCode userCode: String, deviceCode: String, expirationDate: NSDate, completion: AuthenticationCompletion)
+    private func doPinCodeAuthorization(userCode: String, deviceCode: String, expirationDate: Date, completion: AuthenticationCompletion)
     {
-        guard NSDate().compare(expirationDate) == .OrderedAscending
+        guard Date().compare(expirationDate) == .orderedAscending
         else
         {
             let description = "Pin code expired"
             
-            let error = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.PinCodeExpired.rawValue, userInfo: [NSLocalizedDescriptionKey: description])
+            let error = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.pinCodeExpired.rawValue, userInfo: [NSLocalizedDescriptionKey: description])
             
             completion(result: .Failure(error: error))
             
@@ -300,9 +300,9 @@ final public class AuthenticationController
         self.client.request(deleteTokensRequest) { (result) in
             switch result
             {
-            case .Success:
+            case .success:
                 break
-            case .Failure(let error):
+            case .failure(let error):
                 print("could not delete tokens: \(error)")
             }
         }
@@ -314,7 +314,7 @@ final public class AuthenticationController
     
     // MARK: - Private
     
-    private func authenticate(request request: AuthenticationRequest, completion: AuthenticationCompletion)
+    private func authenticate(request: AuthenticationRequest, completion: AuthenticationCompletion)
     {
         self.authenticatorClient.request(request) { result in
             
@@ -324,7 +324,7 @@ final public class AuthenticationController
         }
     }
     
-    private func handleAuthenticationResult(result: Result<Response<VIMAccount>>) -> Result<VIMAccount>
+    private func handleAuthenticationResult(_ result: Result<Response<VIMAccount>>) -> Result<VIMAccount>
     {
         guard case .Success(let accountResponse) = result
         else
@@ -340,7 +340,7 @@ final public class AuthenticationController
                 
                 assertionFailure(errorDescription)
                 
-                resultError = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.NoResponse.rawValue, userInfo: [NSLocalizedDescriptionKey: errorDescription])
+                resultError = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.noResponse.rawValue, userInfo: [NSLocalizedDescriptionKey: errorDescription])
             }
             
             return .Failure(error: resultError)
@@ -369,7 +369,7 @@ final public class AuthenticationController
         return .Success(result: account)
     }
     
-    private func authenticateClient(account account: VIMAccount) throws
+    private func authenticateClient(account: VIMAccount) throws
     {
         guard account.accessToken != nil
         else
@@ -378,7 +378,7 @@ final public class AuthenticationController
             
             assertionFailure(errorDescription)
             
-            let error = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.AuthToken.rawValue, userInfo: [NSLocalizedDescriptionKey: errorDescription])
+            let error = NSError(domain: self.dynamicType.ErrorDomain, code: LocalErrorCode.authToken.rawValue, userInfo: [NSLocalizedDescriptionKey: errorDescription])
             
             throw error
         }

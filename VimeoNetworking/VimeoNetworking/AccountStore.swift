@@ -29,17 +29,17 @@ final internal class AccountStore
     
     // MARK: -
     
-    func saveAccount(account: VIMAccount, type: AccountType) throws
+    func saveAccount(_ account: VIMAccount, type: AccountType) throws
     {
         let data = NSMutableData()
-        let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
+        let archiver = NSKeyedArchiver(forWritingWith: data)
         archiver.encodeObject(account)
         archiver.finishEncoding()
         
         try self.dataStore.setData(data, forKey: type.rawValue)
     }
     
-    func loadAccount(type: AccountType) throws -> VIMAccount?
+    func loadAccount(_ type: AccountType) throws -> VIMAccount?
     {
         guard let data = try self.dataStore.dataForKey(type.rawValue)
         else
@@ -65,7 +65,7 @@ final internal class AccountStore
         return account
     }
     
-    func removeAccount(type: AccountType) throws
+    func removeAccount(_ type: AccountType) throws
     {
         try self.dataStore.deleteDataForKey(type.rawValue)
     }

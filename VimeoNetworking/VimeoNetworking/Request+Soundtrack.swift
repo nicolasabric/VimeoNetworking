@@ -19,7 +19,7 @@ public extension Request
         return self.getSoundtrackListRequest(soundtracksURI: self.SoundtracksURI)
     }
     
-    public static func getSoundtrackListRequest(soundtracksURI soundtracksURI: String) -> Request
+    public static func getSoundtrackListRequest(soundtracksURI: String) -> Request
     {
         return Request(path: soundtracksURI)
     }

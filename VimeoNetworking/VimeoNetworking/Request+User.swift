@@ -26,12 +26,12 @@ public extension Request
         return self.getUserFollowingRequest(userURI: self.MeUserURI)
     }
     
-    public static func getUserRequest(userURI userURI: String) -> Request
+    public static func getUserRequest(userURI: String) -> Request
     {
         return Request(path: userURI)
     }
     
-    public static func getUserFollowingRequest(userURI userURI: String) -> Request
+    public static func getUserFollowingRequest(userURI: String) -> Request
     {
         return Request(path: String(format: self.FollowingPathFormat, userURI))
     }

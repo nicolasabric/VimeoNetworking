@@ -10,8 +10,8 @@ import Foundation
 
 public enum Result<ResultType>
 {
-    case Success(result: ResultType)
-    case Failure(error: NSError)
+    case success(result: ResultType)
+    case failure(error: NSError)
 }
 
 /// This dummy enum acts as a generic typealias

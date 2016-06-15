@@ -10,7 +10,7 @@ import Foundation
 
 class ExceptionCatcher: ObjC_ExceptionCatcher
 {
-    @nonobjc public static func doUnsafe(unsafeBlock: (Void -> Void)) throws
+    @nonobjc public static func doUnsafe(_ unsafeBlock: ((Void) -> Void)) throws
     {
         if let error = self._doUnsafe(unsafeBlock)
         {

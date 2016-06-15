@@ -10,21 +10,21 @@ import Foundation
 
 public enum CacheFetchPolicy
 {
-    static let DefaultPolicy: CacheFetchPolicy = .CacheThenNetwork
+    static let DefaultPolicy: CacheFetchPolicy = .cacheThenNetwork
     
-    case CacheOnly
-    case CacheThenNetwork
-    case NetworkOnly
-    case TryNetworkThenCache
+    case cacheOnly
+    case cacheThenNetwork
+    case networkOnly
+    case tryNetworkThenCache
 }
 
 public enum RetryPolicy
 {
-    static let DefaultPolicy: RetryPolicy = .SingleAttempt
-    static let TryThreeTimes: RetryPolicy = .MultipleAttempts(attemptCount: 3, initialDelay: 2.0)
+    static let DefaultPolicy: RetryPolicy = .singleAttempt
+    static let TryThreeTimes: RetryPolicy = .multipleAttempts(attemptCount: 3, initialDelay: 2.0)
     
-    case SingleAttempt
-    case MultipleAttempts(attemptCount: Int, initialDelay: NSTimeInterval)
+    case singleAttempt
+    case multipleAttempts(attemptCount: Int, initialDelay: TimeInterval)
 }
 
 public struct Request<ModelType: MappableResponse>

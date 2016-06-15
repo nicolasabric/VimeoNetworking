@@ -11,74 +11,74 @@ import Foundation
 public enum VimeoErrorCode: Int
 {
     // Upload
-    case UploadStorageQuotaExceeded = 4101
-    case UploadDailyQuotaExceeded = 4102
+    case uploadStorageQuotaExceeded = 4101
+    case uploadDailyQuotaExceeded = 4102
     
-    case InvalidRequestInput = 2204 // root error code for all invalid parameters errors below
+    case invalidRequestInput = 2204 // root error code for all invalid parameters errors below
     
     // Password-protected video playback
-    case VideoPasswordIncorrect = 2222
-    case NoVideoPasswordProvided = 2223
+    case videoPasswordIncorrect = 2222
+    case noVideoPasswordProvided = 2223
     
     // Authentication
-    case EmailTooLong = 2216
-    case PasswordTooShort = 2210
-    case PasswordTooSimple = 2211
-    case NameInPassword = 2212
-    case EmailNotRecognized = 2217
-    case PasswordEmailMismatch = 2218
-    case NoPasswordProvided = 2209
-    case NoEmailProvided = 2214
-    case InvalidEmail = 2215
-    case NoNameProvided = 2213
-    case NameTooLong = 2208
-    case FacebookJoinInvalidToken = 2303
-    case FacebookJoinNoToken = 2306
-    case FacebookJoinMissingProperty = 2304
-    case FacebookJoinMalformedToken = 2305
-    case FacebookJoinDecryptFail = 2307
-    case FacebookJoinTokenTooLong = 2308
-    case FacebookLogInNoToken = 2312
-    case FacebookLogInMissingProperty = 2310
-    case FacebookLogInMalformedToken = 2311
-    case FacebookLogInDecryptFail = 2313
-    case FacebookLogInTokenTooLong = 2314
-    case FacebookInvalidInputGrantType = 2221
-    case FacebookJoinValidateTokenFail = 2315
-    case FacebookInvalidNoInput = 2207
-    case FacebookInvalidToken = 2300
-    case FacebookMissingProperty = 2301
-    case FacebookMalformedToken = 2302
-    case EmailAlreadyRegistered = 2400
-    case EmailBlocked = 2401
-    case EmailSpammer = 2402
-    case EmailPurgatory = 2403
-    case URLUnavailable = 2404
-    case Timeout = 5000
-    case TokenNotGenerated = 5001
+    case emailTooLong = 2216
+    case passwordTooShort = 2210
+    case passwordTooSimple = 2211
+    case nameInPassword = 2212
+    case emailNotRecognized = 2217
+    case passwordEmailMismatch = 2218
+    case noPasswordProvided = 2209
+    case noEmailProvided = 2214
+    case invalidEmail = 2215
+    case noNameProvided = 2213
+    case nameTooLong = 2208
+    case facebookJoinInvalidToken = 2303
+    case facebookJoinNoToken = 2306
+    case facebookJoinMissingProperty = 2304
+    case facebookJoinMalformedToken = 2305
+    case facebookJoinDecryptFail = 2307
+    case facebookJoinTokenTooLong = 2308
+    case facebookLogInNoToken = 2312
+    case facebookLogInMissingProperty = 2310
+    case facebookLogInMalformedToken = 2311
+    case facebookLogInDecryptFail = 2313
+    case facebookLogInTokenTooLong = 2314
+    case facebookInvalidInputGrantType = 2221
+    case facebookJoinValidateTokenFail = 2315
+    case facebookInvalidNoInput = 2207
+    case facebookInvalidToken = 2300
+    case facebookMissingProperty = 2301
+    case facebookMalformedToken = 2302
+    case emailAlreadyRegistered = 2400
+    case emailBlocked = 2401
+    case emailSpammer = 2402
+    case emailPurgatory = 2403
+    case urlUnavailable = 2404
+    case timeout = 5000
+    case tokenNotGenerated = 5001
 }
 
 public enum HTTPStatusCode: Int
 {
-    case ServiceUnavailable = 503
-    case BadRequest = 400
-    case Unauthorized = 401
-    case Forbidden = 403
+    case serviceUnavailable = 503
+    case badRequest = 400
+    case unauthorized = 401
+    case forbidden = 403
 }
 
 public enum LocalErrorCode: Int
 {
     // VimeoClient
-    case Undefined = 9000
-    case InvalidResponseDictionary = 9001
-    case RequestMalformed = 9002
-    case CachedResponseNotFound = 9003
+    case undefined = 9000
+    case invalidResponseDictionary = 9001
+    case requestMalformed = 9002
+    case cachedResponseNotFound = 9003
     
     // AuthenticationController
-    case AuthToken = 9004
-    case CodeGrant = 9005
-    case CodeGrantState = 9006
-    case NoResponse = 9007
-    case PinCodeInfo = 9008
-    case PinCodeExpired = 9009
+    case authToken = 9004
+    case codeGrant = 9005
+    case codeGrantState = 9006
+    case noResponse = 9007
+    case pinCodeInfo = 9008
+    case pinCodeExpired = 9009
 }

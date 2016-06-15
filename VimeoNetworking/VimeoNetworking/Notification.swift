@@ -40,37 +40,37 @@ public enum Notification: String
     
     // MARK: -
     
-    private static let NotificationCenter = NSNotificationCenter.defaultCenter()
+    private static let NotificationCenter = Foundation.NotificationCenter.default()
     
     // MARK: -
     
-    public func post(object object: AnyObject?)
+    public func post(object: AnyObject?)
     {
-        dispatch_async(dispatch_get_main_queue())
+        DispatchQueue.main.async
         {
-            self.dynamicType.NotificationCenter.postNotificationName(self.rawValue, object: object)
+            self.dynamicType.NotificationCenter.post(name: Foundation.Notification.Name(rawValue: self.rawValue), object: object)
         }
     }
     
-    public func observe(target: AnyObject, selector: Selector)
+    public func observe(_ target: AnyObject, selector: Selector)
     {
         self.dynamicType.NotificationCenter.addObserver(target, selector: selector, name: self.rawValue, object: nil)
     }
     
-    @warn_unused_result(message = "Token must be strongly stored, observation ceases on token deallocation")
-    public func observe(observationBlock: (NSNotification) -> Void) -> ObservationToken
+    @warn_unused_result(message : "Token must be strongly stored, observation ceases on token deallocation")
+    public func observe(_ observationBlock: (Foundation.Notification) -> Void) -> ObservationToken
     {
-        let observer = self.dynamicType.NotificationCenter.addObserverForName(self.rawValue, object: nil, queue: NSOperationQueue.mainQueue(), usingBlock: observationBlock)
+        let observer = self.dynamicType.NotificationCenter.addObserver(forName: NSNotification.Name(rawValue: self.rawValue), object: nil, queue: OperationQueue.main(), using: observationBlock)
         
         return ObservationToken(observer: observer)
     }
     
-    public func removeObserver(target: AnyObject)
+    public func removeObserver(_ target: AnyObject)
     {
-        self.dynamicType.NotificationCenter.removeObserver(target, name: self.rawValue, object: nil)
+        self.dynamicType.NotificationCenter.removeObserver(target, name: NSNotification.Name(rawValue: self.rawValue), object: nil)
     }
     
-    public static func removeObserver(target: AnyObject)
+    public static func removeObserver(_ target: AnyObject)
     {
         self.NotificationCenter.removeObserver(target)
     }

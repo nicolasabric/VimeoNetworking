@@ -26,5 +26,5 @@
 
 import Foundation
 
-public let VimeoBaseURLString = NSURL(string: "https://api.vimeo.com")
+public let VimeoBaseURLString = URL(string: "https://api.vimeo.com")
 public let VimeoDefaultAPIVersionString = "3.2"

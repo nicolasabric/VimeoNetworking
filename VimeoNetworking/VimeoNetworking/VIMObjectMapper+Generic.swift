@@ -16,7 +16,7 @@ extension VIMObjectMapper
     static var ErrorNoMappingClass: Int { return 1002 }
     static var ErrorMappingFailed: Int { return 1003 }
     
-    static func mapObject<ModelType: MappableResponse>(responseDictionary: VimeoClient.ResponseDictionary, modelKeyPath: String? = nil) throws -> ModelType
+    static func mapObject<ModelType: MappableResponse>(_ responseDictionary: VimeoClient.ResponseDictionary, modelKeyPath: String? = nil) throws -> ModelType
     {
         // Deserialize the dictionary into a model object
         

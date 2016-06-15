@@ -14,21 +14,21 @@ public extension String
     {
         var parameters: [String: String] = [:]
         
-        let scanner = NSScanner(string: self)
-        while !scanner.atEnd
+        let scanner = Scanner(string: self)
+        while !scanner.isAtEnd
         {
             var name: NSString?
             let equals = "="
-            scanner.scanUpToString(equals, intoString: &name)
-            scanner.scanString(equals, intoString: nil)
+            scanner.scanUpTo(equals, into: &name)
+            scanner.scanString(equals, into: nil)
             
             var value: NSString?
             let ampersand = "&"
-            scanner.scanUpToString(ampersand, intoString: &value)
-            scanner.scanString(ampersand, intoString: nil)
+            scanner.scanUpTo(ampersand, into: &value)
+            scanner.scanString(ampersand, into: nil)
             
-            if let name = name?.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding),
-                let value = value?.stringByReplacingPercentEscapesUsingEncoding(NSUTF8StringEncoding)
+            if let name = name?.replacingPercentEscapes(using: String.Encoding.utf8.rawValue),
+                let value = value?.replacingPercentEscapes(using: String.Encoding.utf8.rawValue)
             {
                 parameters[name] = value
             }

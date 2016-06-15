@@ -12,7 +12,7 @@ public typealias ToggleRequest = Request<VIMNullResponse>
 
 public extension Request
 {
-    public static func watchLaterRequest(videoURI videoURI: String) -> Request
+    public static func watchLaterRequest(videoURI: String) -> Request
     {
         return Request(method: .PUT, path: "/users/10895030/likes/7235817")
     }

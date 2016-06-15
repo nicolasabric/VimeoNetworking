@@ -23,7 +23,7 @@ public extension Request
             }
         }
         
-        cacheKey = cacheKey.stringByReplacingOccurrencesOfString("/", withString: ".")
+        cacheKey = cacheKey.replacingOccurrences(of: "/", with: ".")
         
         return cacheKey
     }

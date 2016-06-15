@@ -11,11 +11,11 @@ import Security
 
 protocol SecureDataStore
 {
-    func setData(data: NSData, forKey key: String) throws
+    func setData(_ data: Data, forKey key: String) throws
     
-    func dataForKey(key: String) throws -> NSData?
+    func dataForKey(_ key: String) throws -> Data?
     
-    func deleteDataForKey(key: String) throws
+    func deleteDataForKey(_ key: String) throws
 }
 
 final class KeychainStore: SecureDataStore
@@ -29,7 +29,7 @@ final class KeychainStore: SecureDataStore
         self.accessGroup = accessGroup
     }
     
-    func setData(data: NSData, forKey key: String) throws
+    func setData(_ data: Data, forKey key: String) throws
     {
         try self.deleteDataForKey(key)
         
@@ -46,7 +46,7 @@ final class KeychainStore: SecureDataStore
         }
     }
     
-    func dataForKey(key: String) throws -> NSData?
+    func dataForKey(_ key: String) throws -> Data?
     {
         var query = self.queryForKey(key)
         
@@ -55,7 +55,7 @@ final class KeychainStore: SecureDataStore
         
         var attributes: AnyObject? = nil
         let status = SecItemCopyMatching(query, &attributes)
-        let data = attributes as? NSData
+        let data = attributes as? Data
         
         if status != errSecSuccess && status != errSecItemNotFound
         {
@@ -65,7 +65,7 @@ final class KeychainStore: SecureDataStore
         return data
     }
     
-    func deleteDataForKey(key: String) throws
+    func deleteDataForKey(_ key: String) throws
     {
         let query = self.queryForKey(key)
         
@@ -79,7 +79,7 @@ final class KeychainStore: SecureDataStore
     
     // MARK: - 
     
-    private func queryForKey(key: String) -> [String: AnyObject]
+    private func queryForKey(_ key: String) -> [String: AnyObject]
     {
         var query: [String: AnyObject] = [:]
         
@@ -95,7 +95,7 @@ final class KeychainStore: SecureDataStore
         return query
     }
     
-    private func errorForStatus(status: OSStatus) -> NSError
+    private func errorForStatus(_ status: OSStatus) -> NSError
     {
         let errorMessage: String
         
@@ -135,9 +135,9 @@ final class KeychainStore: SecureDataStore
 
 final class ArchiveStore: SecureDataStore
 {
-    private let fileManager = NSFileManager.defaultManager()
+    private let fileManager = FileManager.default()
     
-    func setData(data: NSData, forKey key: String) throws
+    func setData(_ data: Data, forKey key: String) throws
     {
         let fileURL = self.fileURLForKey(key: key)
         
@@ -150,15 +150,15 @@ final class ArchiveStore: SecureDataStore
         
         if let documentsDirectoryURL = self.documentsDirectoryURL()
         {
-            try self.fileManager.createDirectoryAtURL(documentsDirectoryURL, withIntermediateDirectories: true, attributes: nil)
+            try self.fileManager.createDirectory(at: documentsDirectoryURL, withIntermediateDirectories: true, attributes: nil)
         }
         
-        if self.fileManager.fileExistsAtPath(filePath)
+        if self.fileManager.fileExists(atPath: filePath)
         {
-            try self.fileManager.removeItemAtPath(filePath)
+            try self.fileManager.removeItem(atPath: filePath)
         }
         
-        let success = self.fileManager.createFileAtPath(filePath, contents: data, attributes: nil)
+        let success = self.fileManager.createFile(atPath: filePath, contents: data, attributes: nil)
         
         if !success
         {
@@ -167,29 +167,29 @@ final class ArchiveStore: SecureDataStore
         }
     }
     
-    func dataForKey(key: String) throws -> NSData?
+    func dataForKey(_ key: String) throws -> Data?
     {
-        let data = NSData(contentsOfURL: self.fileURLForKey(key: key))
+        let data = try? Data(contentsOf: self.fileURLForKey(key: key))
         
         return data
     }
     
-    func deleteDataForKey(key: String) throws
+    func deleteDataForKey(_ key: String) throws
     {
-        try self.fileManager.removeItemAtURL(self.fileURLForKey(key: key))
+        try self.fileManager.removeItem(at: self.fileURLForKey(key: key))
     }
     
-    private func documentsDirectoryURL() -> NSURL?
+    private func documentsDirectoryURL() -> URL?
     {
-        if let directory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first
+        if let directory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
         {
-            return NSURL(fileURLWithPath: directory)
+            return URL(fileURLWithPath: directory)
         }
         
         return nil
     }
     
-    private func fileURLForKey(key key: String) -> NSURL
+    private func fileURLForKey(key: String) -> URL
     {
         guard let directoryURL = self.documentsDirectoryURL()
         else
@@ -197,7 +197,7 @@ final class ArchiveStore: SecureDataStore
             fatalError("no documents directories found")
         }
         
-        let fileURL = directoryURL.URLByAppendingPathComponent("dontlookatthis-\(key).plist")
+        let fileURL = try! directoryURL.appendingPathComponent("dontlookatthis-\(key).plist")
         
         return fileURL
     }

@@ -19,7 +19,7 @@ public enum Scope: String
     case Interact = "interact"   // Interact with a video on behalf of a user, such as liking a video or adding it to your watch later queue
     case Upload = "upload"       // Upload a video
     
-    static func combine(scopes: [Scope]) -> String
+    static func combine(_ scopes: [Scope]) -> String
     {
         return scopes.reduce("") { $0 + " " + $1.rawValue }
     }

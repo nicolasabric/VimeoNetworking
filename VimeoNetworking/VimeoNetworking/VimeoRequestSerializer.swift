@@ -33,7 +33,7 @@ final public class VimeoRequestSerializer: AFHTTPRequestSerializer
     private static let AcceptHeaderKey = "Accept"
     private static let AuthorizationHeaderKey = "Authorization"
     
-    public typealias AccessTokenProvider = Void -> String?
+    public typealias AccessTokenProvider = (Void) -> String?
     
     // MARK: 
     
@@ -72,16 +72,16 @@ final public class VimeoRequestSerializer: AFHTTPRequestSerializer
     
     // MARK: Overrides
     
-    override public func requestWithMethod(method: String, URLString: String, parameters: AnyObject?, error: NSErrorPointer) -> NSMutableURLRequest
+    override public func request(withMethod method: String, urlString URLString: String, parameters: AnyObject?, error: NSErrorPointer) -> NSMutableURLRequest
     {
-        var request = super.requestWithMethod(method, URLString: URLString, parameters: parameters, error: error)
+        var request = super.request(withMethod: method, urlString: URLString, parameters: parameters, error: error)
        
         request = self.setAuthorizationHeader(request: request)
         
         return request
     }
     
-    override public func requestBySerializingRequest(request: NSURLRequest, withParameters parameters: AnyObject?, error: NSErrorPointer) -> NSURLRequest?
+    override public func request(serializingRequest request: URLRequest, withParameters parameters: AnyObject?, error: NSErrorPointer) -> URLRequest?
     {
         if let request = super.requestBySerializingRequest(request, withParameters: parameters, error: error)
         {
@@ -94,9 +94,9 @@ final public class VimeoRequestSerializer: AFHTTPRequestSerializer
         return nil
     }
     
-    override public func requestWithMultipartFormRequest(request: NSURLRequest, writingStreamContentsToFile fileURL: NSURL, completionHandler handler: ((NSError?) -> Void)?) -> NSMutableURLRequest
+    override public func request(withMultipartForm request: URLRequest, writingStreamContentsToFile fileURL: URL, completionHandler handler: ((NSError?) -> Void)?) -> NSMutableURLRequest
     {
-        var request = super.requestWithMultipartFormRequest(request, writingStreamContentsToFile: fileURL, completionHandler: handler)
+        var request = super.request(withMultipartForm: request, writingStreamContentsToFile: fileURL, completionHandler: handler)
     
         request = self.setAuthorizationHeader(request: request)
         
@@ -105,13 +105,13 @@ final public class VimeoRequestSerializer: AFHTTPRequestSerializer
     
     // MARK: Private API
     
-    private func setup(apiVersion apiVersion: String)
+    private func setup(apiVersion: String)
     {
         self.setValue("application/vnd.vimeo.*+json; version=\(apiVersion)", forHTTPHeaderField: self.dynamicType.AcceptHeaderKey)
 //        self.writingOptions = .PrettyPrinted
     }
 
-    private func setAuthorizationHeader(request request: NSMutableURLRequest) -> NSMutableURLRequest
+    private func setAuthorizationHeader(request: NSMutableURLRequest) -> NSMutableURLRequest
     {
         if let token = self.accessTokenProvider?()
         {
@@ -124,8 +124,8 @@ final public class VimeoRequestSerializer: AFHTTPRequestSerializer
             let clientSecret = appConfiguration.clientSecret
             
             let authString = "\(clientID):\(clientSecret)"
-            let authData = authString.dataUsingEncoding(NSUTF8StringEncoding)
-            let base64String = authData?.base64EncodedStringWithOptions([])
+            let authData = authString.data(using: String.Encoding.utf8)
+            let base64String = authData?.base64EncodedString([])
             
             if let base64String = base64String
             {
