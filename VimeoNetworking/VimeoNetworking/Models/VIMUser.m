@@ -45,6 +45,10 @@
 
 @end
 
+@implementation VIMUserBadge
+
+@end
+
 @implementation VIMUser
 
 #pragma mark - Public API

@@ -268,7 +268,7 @@ final internal class ResponseCache
             
             let fileURL = directoryURL.URLByAppendingPathComponent(key)
             
-            return fileURL
+            return fileURL!
         }
     }
 }

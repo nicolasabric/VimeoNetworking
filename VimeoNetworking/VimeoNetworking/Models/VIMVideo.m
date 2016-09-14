@@ -56,6 +56,10 @@ NSString *VIMContentRating_Safe = @"safe";
 
 @end
 
+@implementation VIMVideoPlayRepresentation
+
+@end
+
 @implementation VIMVideo
 
 #pragma mark - Accessors
